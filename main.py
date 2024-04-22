@@ -1,5 +1,6 @@
 from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List, Dict
 
 origins = ["*"]
