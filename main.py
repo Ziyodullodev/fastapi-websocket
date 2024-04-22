@@ -2,6 +2,16 @@ from fastapi import FastAPI, WebSocket
 from fastapi.responses import HTMLResponse
 from typing import List, Dict
 
+origins = ["*"]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 app = FastAPI()
 
 html = """
