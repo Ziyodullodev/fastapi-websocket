@@ -3,6 +3,7 @@ from fastapi.responses import HTMLResponse
 from typing import List, Dict
 
 origins = ["*"]
+app = FastAPI()
 
 app.add_middleware(
     CORSMiddleware,
@@ -12,7 +13,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-app = FastAPI()
+
 
 html = """
 <!DOCTYPE html>
