@@ -64,23 +64,11 @@ sudo systemctl restart nginx
 
 ## gunicorn service
 ```
-[Unit]
-Description=gunicorn daemon
-After=network.target
+bash
+sudo nano /etc/systemd/system/gunicorn.socket
 
-[Service]
-User=root
-Group=www-data
-WorkingDirectory=/home/something/fastapi-websocket
-ExecStart=/home/something/fastapi-websocket/venv/bin/gunicorn -k uvicorn.workers.UvicornWorker -w 3 -b 0.0.0.0:8000 -t 360 --reload --access-logfile - main:app
+then paste this code
 
-[Install]
-WantedBy=multi-user.target
-```
-
-## gunicorn socket
-```
-  GNU nano 6.2                                                             
 [Unit]
 Description=gunicorn socket
 
@@ -90,3 +78,33 @@ ListenStream=/run/gunicorn.sock
 [Install]
 WantedBy=sockets.target
 ```
+## and then
+```
+bash
+sudo nano /etc/systemd/system/gunicorn.service
+
+then paste this code
+
+[Unit]
+Description=gunicorn daemon
+After=network.target
+
+[Service]
+User=root
+Group=www-data
+WorkingDirectory=/home/something/fastapi-websocket // bu joydagi file pathni o'zgartirasiz
+ExecStart=/home/something/fastapi-websocket/venv/bin/gunicorn -k uvicorn.workers.UvicornWorker -w 3 -b 0.0.0.0:8000 -t 360 --reload --access-logfile - main:app // bu joydagini ham o'zgartirasiz
+
+[Install]
+WantedBy=multi-user.target
+```
+
+# and then restart
+```
+bash
+sudo systemctl start gunicorn.socket
+sudo systemctl enable gunicorn.socket
+```
+
+
+
