@@ -14,42 +14,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
-
-html = """
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Chat</title>
-    </head>
-    <body>
-        <h1>WebSocket Chat</h1>
-        <form action="" onsubmit="sendMessage(event)">
-            <input type="text" id="messageText" autocomplete="off"/>
-            <button>Send</button>
-        </form>
-        <ul id='messages'>
-        </ul>
-        <script>
-            var ws = new WebSocket("ws://localhost:8000/ws");
-            ws.onmessage = function(event) {
-                var messages = document.getElementById('messages')
-                var message = document.createElement('li')
-                var content = document.createTextNode(event.data)
-                message.appendChild(content)
-                messages.appendChild(message)
-            };
-            function sendMessage(event) {
-                var input = document.getElementById("messageText")
-                ws.send(input.value)
-                input.value = ''
-                event.preventDefault()
-            }
-        </script>
-    </body>
-</html>
-"""
-
 chat_template = """
 <!DOCTYPE html>
 <html lang="en">
@@ -75,7 +39,7 @@ chat_template = """
 
         function joinRoom() {
             const room = roomInput.value;
-            socket = new WebSocket(`ws://localhost:8000/chat/${room}`);
+            socket = new WebSocket(`wss://your_domain.uz/chat/${room}`); # edit this place your domain
             socket.onmessage = function(event) {
                 const messageDiv = document.createElement("div");
                 messageDiv.textContent = event.data;
@@ -95,24 +59,11 @@ chat_template = """
 
 """
 
-@app.get("/")
-async def get():
-    return HTMLResponse(html)
-
 @app.get("/chat")
 async def get():
     return HTMLResponse(chat_template)
 
 
-@app.websocket("/ws")
-async def websocket_endpoint(websocket: WebSocket):
-    await websocket.accept()
-    while True:
-        data = await websocket.receive_text()
-        await websocket.send_text(f"Message text was: {data}")
-
-
-# Store WebSocket connections and user information
 active_connections: Dict[str, List[WebSocket]] = {}
 
 @app.websocket("/chat/{room}")
